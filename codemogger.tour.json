@@ -7,7 +7,7 @@
     {
       "id": "overview",
       "title": "Project Overview",
-      "description": "Codemogger is a code indexing library that parses source code with tree-sitter, chunks it into semantic units, embeds them locally with all-MiniLM-L6-v2, and stores everything in a single SQLite file. No Docker, no server, no API keys — just one .db file per codebase with vector + full-text search.",
+      "description": "Codemogger is a code indexing library that parses source code with tree-sitter, chunks it into semantic units, embeds them locally with all-MiniLM-L6-v2, and stores everything in a single SQLite file. No Docker, no server, no API keys — just one database file per codebase with vector + full-text search.",
       "focusDirectory": "",
       "colorMode": "fileTypes"
     },
