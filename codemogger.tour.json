@@ -1,0 +1,213 @@
+{
+  "id": "codemogger-onboarding",
+  "title": "Codemogger: Local Code Indexing for AI Agents",
+  "description": "A guided tour of codemogger's architecture — from file scanning and tree-sitter parsing to hybrid search with vector embeddings and BM25.",
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Project Overview",
+      "description": "Codemogger is a code indexing library that parses source code with tree-sitter, chunks it into semantic units, embeds them locally with all-MiniLM-L6-v2, and stores everything in a single SQLite file. No Docker, no server, no API keys — just one .db file per codebase with vector + full-text search.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes"
+    },
+    {
+      "id": "entry-points",
+      "title": "Entry Points: CLI & Main API",
+      "description": "The project has two entry points. The CodeIndex class in src/index.ts is the main API surface with index() and search() methods. The CLI in bin/codemogger.ts wraps it with Commander.js commands: index, search, list, and mcp.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "entry-points",
+          "name": "Entry Points",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "src/index.ts", "type": "file" },
+            { "path": "bin/codemogger.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "scan-phase",
+      "title": "Phase 1: File Scanning",
+      "description": "The index pipeline starts with the walker in src/scan/. It recursively walks directories, respects .gitignore, skips common non-source dirs (node_modules, .git, build), enforces file size limits, and computes SHA-256 hashes for incremental re-indexing — only changed files get reprocessed.",
+      "focusDirectory": "src/scan",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "scan-layer",
+          "name": "File Scanner",
+          "color": "#22c55e",
+          "items": [
+            { "path": "src/scan/walker.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "chunk-phase",
+      "title": "Phase 2: AST Parsing & Chunking",
+      "description": "Tree-sitter WASM parsers extract semantic chunks (functions, classes, structs, etc.) from 14 languages. The languages.ts config maps file extensions to parser grammars and top-level node types. Items over 150 lines are split into sub-items. Each chunk captures name, signature, kind, and line range.",
+      "focusDirectory": "src/chunk",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "chunk-layer",
+          "name": "Chunking Engine",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "src/chunk/treesitter.ts", "type": "file" },
+            { "path": "src/chunk/languages.ts", "type": "file" },
+            { "path": "src/chunk/types.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "embed-phase",
+      "title": "Phase 3: Local Embeddings",
+      "description": "Chunks are embedded locally using all-MiniLM-L6-v2 (384 dimensions, int8 quantized). No API keys or network calls needed. Batches of up to 128 texts balance throughput and memory. Embeddings are stored as vector8 (int8) in SQLite for fast cosine similarity search.",
+      "focusDirectory": "src/embed",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "embed-layer",
+          "name": "Embedding Engine",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "src/embed/local.ts", "type": "file" },
+            { "path": "src/embed/types.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "storage-phase",
+      "title": "Phase 4: SQLite Storage",
+      "description": "Everything lands in a single SQLite database via Turso. The schema defines tables for codebases, chunks (with int8 embeddings), and indexed files. Per-codebase FTS indexes enable BM25 keyword search. The store handles batch upserts, stale file cleanup, and both vector and full-text queries.",
+      "focusDirectory": "src/db",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "db-layer",
+          "name": "Database Layer",
+          "color": "#ef4444",
+          "items": [
+            { "path": "src/db/store.ts", "type": "file" },
+            { "path": "src/db/schema.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "search-pipeline",
+      "title": "Search: Hybrid Retrieval",
+      "description": "Search supports three modes: semantic (vector cosine similarity), keyword (BM25 full-text on names/signatures), and hybrid. Hybrid mode uses Reciprocal Rank Fusion to merge results — FTS weighted at 0.4, vector at 0.6. The query processor strips stopwords and agent filler words, extracting up to 12 keyword terms.",
+      "focusDirectory": "src/search",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "search-layer",
+          "name": "Search & Ranking",
+          "color": "#06b6d4",
+          "items": [
+            { "path": "src/search/query.ts", "type": "file" },
+            { "path": "src/search/rank.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "mcp-integration",
+      "title": "MCP Server Integration",
+      "description": "Codemogger exposes three tools via the Model Context Protocol: codemogger_search, codemogger_index, and codemogger_reindex. This lets AI coding agents like Claude Code use codemogger as a plugin. Tool descriptions adapt dynamically to reflect the current codebase state.",
+      "focusDirectory": "src",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "mcp-layer",
+          "name": "MCP Server",
+          "color": "#ec4899",
+          "items": [
+            { "path": "src/mcp.ts", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "full-picture",
+      "title": "The Full Pipeline",
+      "description": "The complete flow: scan directories → hash files → parse with tree-sitter → chunk into semantic units → embed locally → store in SQLite. Search combines vector similarity and BM25 keyword matching via Reciprocal Rank Fusion. Keyword search alone is 25-370x faster than ripgrep, with precise definition-level results.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "pipeline-scan",
+          "name": "1. Scan",
+          "color": "#22c55e",
+          "items": [
+            { "path": "src/scan", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-chunk",
+          "name": "2. Chunk",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "src/chunk", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-embed",
+          "name": "3. Embed",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "src/embed", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-store",
+          "name": "4. Store",
+          "color": "#ef4444",
+          "items": [
+            { "path": "src/db", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-search",
+          "name": "5. Search",
+          "color": "#06b6d4",
+          "items": [
+            { "path": "src/search", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    }
+  ]
+}
