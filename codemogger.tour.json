@@ -14,7 +14,7 @@
     {
       "id": "entry-points",
       "title": "Entry Points: CLI & Main API",
-      "description": "The project has two entry points. The CodeIndex class in src/index.ts is the main API surface with index and search methods. The CLI in bin/codemogger.ts wraps it with Commander.js commands: index, search, list, and mcp.",
+      "description": "The project has two entry points. The CodeIndex class in src index.ts is the main API surface with index and search methods. The CLI in bin codemogger.ts wraps it with Commander.js commands: index, search, list, and mcp.",
       "focusDirectory": "",
       "colorMode": "fileTypes",
       "highlightLayers": [
@@ -33,7 +33,7 @@
     {
       "id": "scan-phase",
       "title": "Phase 1: File Scanning",
-      "description": "The index pipeline starts with the walker in src/scan/. It recursively walks directories, respects .gitignore, skips common non-source dirs (node_modules, .git, build), enforces file size limits, and computes SHA-256 hashes for incremental re-indexing — only changed files get reprocessed.",
+      "description": "The index pipeline starts with the walker in the scan module. It recursively walks directories, respects gitignore rules, skips common non-source dirs like node_modules and build, enforces file size limits, and computes SHA-256 hashes for incremental re-indexing — only changed files get reprocessed.",
       "focusDirectory": "src/scan",
       "colorMode": "fileTypes",
       "highlightLayers": [
@@ -113,7 +113,7 @@
     {
       "id": "search-pipeline",
       "title": "Search: Hybrid Retrieval",
-      "description": "Search supports three modes: semantic (vector cosine similarity), keyword (BM25 full-text on names/signatures), and hybrid. Hybrid mode uses Reciprocal Rank Fusion to merge results — FTS weighted at 0.4, vector at 0.6. The query processor strips stopwords and agent filler words, extracting up to 12 keyword terms.",
+      "description": "Search supports three modes: semantic (vector cosine similarity), keyword (BM25 full-text on names and signatures), and hybrid. Hybrid mode uses Reciprocal Rank Fusion to merge results — FTS weighted at 0.4, vector at 0.6. The query processor strips stopwords and agent filler words, extracting up to 12 keyword terms.",
       "focusDirectory": "src/search",
       "colorMode": "fileTypes",
       "highlightLayers": [
