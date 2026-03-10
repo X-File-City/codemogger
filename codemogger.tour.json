@@ -14,7 +14,7 @@
     {
       "id": "entry-points",
       "title": "Entry Points: CLI & Main API",
-      "description": "The project has two entry points. The CodeIndex class in src/index.ts is the main API surface with index() and search() methods. The CLI in bin/codemogger.ts wraps it with Commander.js commands: index, search, list, and mcp.",
+      "description": "The project has two entry points. The CodeIndex class in src/index.ts is the main API surface with index and search methods. The CLI in bin/codemogger.ts wraps it with Commander.js commands: index, search, list, and mcp.",
       "focusDirectory": "",
       "colorMode": "fileTypes",
       "highlightLayers": [
@@ -23,7 +23,6 @@
           "name": "Entry Points",
           "color": "#3b82f6",
           "items": [
-            { "path": "src/index.ts", "type": "file" },
             { "path": "bin/codemogger.ts", "type": "file" }
           ],
           "opacity": 0.8,
